@@ -6,7 +6,7 @@ const handler = async(req,res)=>{
     if(req.method=='POST'){
         console.log(req.body)
         const{username,email}=req.body
-    let u = new user({username,email,password:CryptoJS.AES.encrypt(req.body.password, 'secret key 123').toString()});
+    let u = new user({username,email,password:CryptoJS.AES.encrypt(req.body.password, process.env.SECRET_KEY).toString()});
     u.save()
     res.status(200).json({success:"success"})
     
