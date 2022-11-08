@@ -77,7 +77,8 @@ function MyApp({ Component, pageProps }) {
    saveCart(newCart);
 }
 const buyNow=(itemcode,qyt,price ,name,size,varient)=>{
-  let newCart = {itemcode: {qyt : 1 , name,size,name,varient,price}};
+  let newCart = {}
+     newCart[itemcode]= {qyt : 1 , name,size,name,varient,price};
   // if(itemcode in cart){
   //    newCart[itemcode].qyt =cart[itemcode].qyt+qyt;
   // }else{

@@ -1,17 +1,34 @@
-import {React ,useEffect}from 'react'
-import mongoose from 'mongoose';
-import order from '../models/order';
+import {React ,useEffect,useState}from 'react'
+import Link from 'next/Link';
 import { useRouter } from 'next/router';
 const orders = () => {
+  const [orders, setOrders] = useState([])
     const router = useRouter()
     useEffect(()=>{
+      const fetchOrders = async ()=>{
+        let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/myorders`, {
+          method: 'POST', // or 'PUT'
+          headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({token : localStorage.getItem('token')}),
+       })
+       let res = await a.json()
+      setOrders(res.orders)
+
+       //console.log(res)
+      }
+     
         if(!localStorage.getItem('token')){
             router.push('/')
+        }
+        else{
+          fetchOrders()
         }
 
     },[router.query])
   return (
-    <div>
+    <div className='min-h-screen'>
         <div className="flex flex-col">
         <h1 className='font-bold text-center px-2 py-4 bg-orange-300'>My Order</h1>
   <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -24,53 +41,36 @@ const orders = () => {
                 #
               </th>
               <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                First
+               Name
               </th>
               <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Last
+                Amount
               </th>
               <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Handle
+                Details
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+          {orders.map((item)=>{
+            return <tr key={item._id} className="border-b">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.orderId}</td>
               <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Mark
+               {item.email}
               </td>
               <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Otto
+                {item.amount}
               </td>
               <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                @mdo
-              </td>
-            </tr>
-            <tr className="bg-white border-b">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Jacob
-              </td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Thornton
-              </td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                @fat
+                <Link href={'/components/checkorder?id='+ item._id}><a>Details</a></Link>
               </td>
             </tr>
-            <tr className="bg-white border-b">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Larry
-              </td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Wild
-              </td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                @twitter
-              </td>
-            </tr>
+          })
+              
+          }
+            
+            
+            
           </tbody>
         </table>
       </div>
@@ -80,15 +80,15 @@ const orders = () => {
     </div>
   )
 }
-export async function getServerSideProps(context) {
-    if(!mongoose.connections[0].readyState){
-      await mongoose.connect(process.env.MONGO_URI)
-    }
-    let orders = await order.find({})
+// export async function getServerSideProps(context) {
+//     if(!mongoose.connections[0].readyState){
+//       await mongoose.connect(process.env.MONGO_URI)
+//     }
+//     let orders = await order.find({})
     
-    return {
-      props: {orders:orders}, // will be passed to the page component as props
-    }
-  }
+//     return {
+//       props: {orders:JSON.parse(JSON.stringify(orders))}, // will be passed to the page component as props
+//     }
+//   }
 
 export default orders

@@ -9,8 +9,8 @@ if(req.body.STATUS=='TXN_SUCCESS'){
   else if(req.body.STATUS=='PENDING'){
     await order.findOneAndUpdate({orderId:req.body.ORDERID},{status:'paid',paymentInfo:JSON.stringify(req.body)})
   }
-  res.redirect('/components/order',200)
-  res.status(200).json({body:req.body})
+  res.redirect('/components/orders',200)
+  //res.status(200).json({body:req.body})
 }
 
  export default connectDb(handler);

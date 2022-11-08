@@ -9,5 +9,6 @@ const orderSchema = new mongoose.Schema({
     amount:{type:Number,required:true},
     status:{type:String,default:'initiated',required:true}
 },{timestamps:true});
-
-export default mongoose.model("order",orderSchema);
+mongoose.models={};
+const orderschema = mongoose.model.order || mongoose.model("order",orderSchema)
+export default orderschema ;

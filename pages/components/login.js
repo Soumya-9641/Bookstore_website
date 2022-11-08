@@ -30,7 +30,7 @@ const login = () => {
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify(data),
+  body: JSON.stringify(data), 
 })
   let response = await res.json();
   console.log(response)
