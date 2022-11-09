@@ -4,6 +4,8 @@ import { BsFillBagCheckFill} from 'react-icons/bs';
 import Link from 'next/Link';
 import Head from 'next/head';
 import Script from 'next/script';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -14,7 +16,7 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
     const [state, setState] = useState('')
     const [disabled, setdisabled] = useState(true)
     const handleChange= async (e)=>{
-      
+
         if(e.target.name =='name'){
           setName(e.target.value) 
         }
@@ -76,6 +78,9 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
      body: JSON.stringify(data),
    })
    let txnRes = await a.json()
+   if(txnRes.success){
+        
+  
    console.log(txnRes)
    let txnToken = txnRes.txnToken
     var config = {
@@ -95,7 +100,7 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
       }
       }
       };
-      
+     
       // initialze configuration using init method
       window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
       // after successfully updating configuration, invoke JS Checkout
@@ -103,11 +108,35 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
       }).catch(function onError(error){
       console.log("error => ",error);
       });
-      
+    }else{
+      console.log(txnRes.error)
+      toast.error(txnRes.error, {
+        position: "top-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+    }
 };
   return (
    
      <div className="container px-5 py-24 mx-auto">
+     <ToastContainer
+position="top-left"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="dark"
+/>
     <Head>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"/>
     </Head>
