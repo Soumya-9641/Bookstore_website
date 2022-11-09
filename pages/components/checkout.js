@@ -10,10 +10,13 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
     const [address, setAddress] = useState('')
     const [mobile, setMobile] = useState('')
     const [pin, setPin] = useState('')
+    const [city, setCity] = useState('')
+    const [state, setState] = useState('')
     const [disabled, setdisabled] = useState(true)
-    const handleChange=(e)=>{
+    const handleChange= async (e)=>{
+      
         if(e.target.name =='name'){
-          setName(e.target.value)
+          setName(e.target.value) 
         }
        else if(e.target.name =='email'){
           setEmail(e.target.value)
@@ -24,10 +27,35 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
         else if(e.target.name =='mobile'){
            setMobile(e.target.value)
         }
+       
+        else if(e.target.name =='city'){
+          setCity(e.target.value)
+        }
+        else if(e.target.name =='state'){
+          setState(e.target.value)
+        }
         else if(e.target.name =='pin'){
           setPin(e.target.value)
+          if(e.target.value.length==6){
+            let pins= await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
+            let pinJson = await pins.json();
+         // console.log(pinJson,pin);
+            if(Object.keys(pinJson).includes(e.target.value)) {
+              setCity(pinJson[e.target.value][0])
+              setState(pinJson[e.target.value][1])
+              
+            }else{
+              setState('')
+              setCity('')
+            }
+          }else{
+            setState('')
+              setCity('') 
+          }
+          
         }
-        if(name.length>3 && email.length>3 && address.length>3 && mobile.length>9 && pin.length>5){
+
+        if(name.length>3 && email.length>3 && address.length>3 && mobile.length>3 && pin.length>3){
           setdisabled(false)
         }
         else{
@@ -116,10 +144,23 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
             <input  onChange={handleChange} value={mobile} type="mobile" id="mobile" name="mobile" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
           </div>
         </div>
+        
         <div className="p-2 w-1/2">
           <div className="relative">
             <label htmlFor="name" className="leading-7 text-sm text-gray-400">Pin Code</label>
             <input  onChange={handleChange} value={pin} type="pin" id="pin" name="pin" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+          </div>
+        </div>
+        <div className="p-2 w-1/2">
+          <div className="relative">
+            <label htmlFor="name" className="leading-7 text-sm text-gray-400">City</label>
+            <input  onChange={handleChange} value={city} type="city" id="city" name="city" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+          </div>
+        </div>
+        <div className="p-2 w-1/2">
+          <div className="relative">
+            <label htmlFor="name" className="leading-7 text-sm text-gray-400">State</label>
+            <input  onChange={handleChange} value={state} type="state" id="state" name="state" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
           </div>
         </div>
         <div className="p-2 w-full">
