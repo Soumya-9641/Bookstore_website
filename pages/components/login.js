@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React,{useEffect} from 'react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast,ToastContainer } from 'react-toastify'
@@ -10,6 +10,12 @@ const login = () => {
    const [email, setEmail] = useState('')
    const [password, setPassword] = useState('')
   //const [confirmpassword, setconfirmpassword] = useState()
+  useEffect(() => {
+    if(localStorage.getItem('myuser')){
+      router.push('/')
+    }
+  }, [])
+  
    const handleChange=(e)=>{
         
         if(e.target.name =='email'){ 
@@ -37,7 +43,7 @@ const login = () => {
             setEmail('')
             setPassword('')
            if(response.success){
-            localStorage.setItem('token',response.token)
+            localStorage.setItem('myuser',JSON.stringify({token :response.token,email:response.email}))
             toast.success('You are successfully logged in!', {
               position: "bottom-left",
               autoClose: 5000,

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { AiOutlinePlusCircle,AiOutlineMinusCircle} from 'react-icons/ai';
 import { BsFillBagCheckFill} from 'react-icons/bs';
 import Link from 'next/Link';
@@ -6,7 +6,8 @@ import Head from 'next/head';
 import Script from 'next/script';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) => {
+import { userAgent } from 'next/server';
+const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [address, setAddress] = useState('')
@@ -15,6 +16,15 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
     const [city, setCity] = useState('')
     const [state, setState] = useState('')
     const [disabled, setdisabled] = useState(true)
+    const [user, setUser] = useState({value:null})
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('myuser'))
+      if(user.token){
+        setUser(user)
+        setEmail(user.email)
+      }
+    }, [])
+    
     const handleChange= async (e)=>{
 
         if(e.target.name =='name'){
@@ -110,6 +120,7 @@ const checkout =  ({cart,addToCart,RemoveFromCart,clearCart,subTotal,saveCart}) 
       });
     }else{
       console.log(txnRes.error)
+      clearCart()
       toast.error(txnRes.error, {
         position: "top-left",
         autoClose: 5000,
@@ -153,12 +164,15 @@ theme="dark"
           <div className="relative">
             <label htmlFor="name" className="leading-7 text-sm text-gray-400">Name</label>
             <input onChange={handleChange} value={name} type="text" id="name" name="name" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+            
           </div>
         </div>
+
         <div className="p-2 w-1/2">
           <div className="relative">
             <label htmlFor="email" className="leading-7 text-sm text-gray-400">Email</label>
-            <input  onChange={handleChange} value={email} type="email" id="email" name="email" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+            {user && user.value?<input  value={user.email} type="email" id="email" name="email" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" readOnly/> :<input  onChange={handleChange} value={email} type="email" id="email" name="email" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>}
+            
           </div>
         </div>
         <div className="p-2 w-full">
