@@ -17,7 +17,7 @@ const orders = () => {
       setOrders(res.orders)
 
        //console.log(res)
-      }
+      } 
      
         if(!localStorage.getItem('myuser')){
             router.push('/')

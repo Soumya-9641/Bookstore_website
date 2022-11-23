@@ -92,10 +92,10 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
       <span className='font-bold'>SubTotal:₹{subTotal} </span>
       <div className='flex'>
       <div className="p-2 w-full">
-         <button className="flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/><Link href={'/components/checkout'}>Checkout</Link> </button>
+         <button disabled={Object.keys(cart).length==0 && true} className=" disabled:bg-orange-100 flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/><Link href={'/components/checkout'}>Checkout</Link> </button>
         </div>
         <div className="p-2 w-full">
-          <button onClick={clearCart} className="flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/>ClearCart </button>
+          <button onClick={clearCart} disabled={Object.keys(cart).length==0 && true} className="disabled:bg-orange-100 flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/>ClearCart </button>
         </div>
       </div>
     </ol>

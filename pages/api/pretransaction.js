@@ -4,19 +4,26 @@ const PaytmChecksum = require('paytmchecksum');
 import order from '../models/order';
 import connectDb from '../middlewares/mongoose';
 import product from '../models/product';
+import pincode from "../../pincode.json";
 const handler = async(req,res)=>{
             
             if(req.method=='POST'){
             let Product,sumTotal=0;
+            if(!Object.keys(pincode).includes(req.body.pin)){
+                res.status(200).json({success:false,"error":"This pincode is not servicesable!"})
+                return 
+            }
             //check the cart is tempered with
             let cart=req.body.cart
             for( let item in cart){
                 console.log(item)
                 sumTotal+=cart[item].price*cart[item].qyt
                 Product = await product.findOne({slug:item})
-
+                if(req.body.subTotal <=0){
+                    res.status(200).json({success:false,"error":"Your cart is empty!please build your cart and try later",clearCart:true});
+                }
                 if(Product.availability < cart[item].qyt){
-                    res.status(200).json({success:false,"error":"some items in your cart is out of stock.Please try again later. "})
+                    res.status(200).json({success:false,"error":"some items in your cart is out of stock.Please try again later. ",clearCart:true})
                 }
 
                 if(Product.price!=cart[item].price){
@@ -30,6 +37,15 @@ const handler = async(req,res)=>{
             }
 
             //check if items are out of stock
+
+            if(req.body.mobile.length!=10 || !Number.isInteger(Number(req.body.mobile))){
+                res.status(200).json({success:false,"error":" Please enter your 10 digit number",clearCart:false})
+                return 
+            }
+            if(req.body.pin.length!=6 || !Number.isInteger(Number(req.body.pin))){
+                res.status(200).json({success:false,"error":" Please enter your 10 digit number",clearCart:false})
+                return 
+            }
 
             //check if details are valid 
 

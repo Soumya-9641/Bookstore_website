@@ -6,6 +6,7 @@ const orderSchema = new mongoose.Schema({
     paymentInfo:{type:String,default:''},
     products:{type:Object , required:true},
     address:{type:String,required:true},
+    transactionid:{type:String,default:""},
     amount:{type:Number,required:true},
     status:{type:String,default:'initiated',required:true}
 },{timestamps:true});

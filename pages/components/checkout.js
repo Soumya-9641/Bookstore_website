@@ -16,14 +16,23 @@ const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) 
     const [city, setCity] = useState('')
     const [state, setState] = useState('')
     const [disabled, setdisabled] = useState(true)
-    const [user, setUser] = useState({value:null})
+    //const [user, setUser] = useState({value:null})
+    // useEffect(() => {
+    //   const user = JSON.parse(localStorage.getItem('myuser'))
+    //   if(user.token){
+    //     setUser(user)
+    //     setEmail(user.email)
+    //   }
+    // }, [])
     useEffect(() => {
-      const user = JSON.parse(localStorage.getItem('myuser'))
-      if(user.token){
-        setUser(user)
-        setEmail(user.email)
+      if(name.length>3 && email.length>3 && mobile.length>3 && address.length>3 && pin.length>3){
+        setdisabled(false)
+      }else{
+        setdisabled(true)
       }
-    }, [])
+      
+    }, [name,email,mobile,address,pin])
+    
     
     const handleChange= async (e)=>{
 
@@ -67,12 +76,7 @@ const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) 
           
         }
 
-        if(name.length>3 && email.length>3 && address.length>3 && mobile.length>3 && pin.length>3){
-          setdisabled(false)
-        }
-        else{
-          setdisabled(true)
-        }
+       
     }
     
   const paymentinitiate = async()=>{
@@ -119,8 +123,11 @@ const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) 
       console.log("error => ",error);
       });
     }else{
+      if(txnRes.error){
+        clearCart()
+      }
       console.log(txnRes.error)
-      clearCart()
+      
       toast.error(txnRes.error, {
         position: "top-left",
         autoClose: 5000,
@@ -171,7 +178,7 @@ theme="dark"
         <div className="p-2 w-1/2">
           <div className="relative">
             <label htmlFor="email" className="leading-7 text-sm text-gray-400">Email</label>
-            {user && user.value?<input  value={user.email} type="email" id="email" name="email" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" readOnly/> :<input  onChange={handleChange} value={email} type="email" id="email" name="email" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>}
+             <input  onChange={handleChange} value={email} type="email" id="email" name="email" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
             
           </div>
         </div>
