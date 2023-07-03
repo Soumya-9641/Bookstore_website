@@ -23,7 +23,7 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
   }
   
   return (
-    <div className='sticky top-0 z-50 text-gray-600 body-font bg-gray-400'>
+    <div className='sticky top-0 z-50 text-gray-600 body-font bg-violet-300'>
     <header className=" text-gray-600 body-font">
   <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
     <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
@@ -43,14 +43,14 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
       <Link href={'/components/Bestsellers'}><a className="mr-5 hover:text-gray-900">Best Sellers</a></Link>
     </nav>
     <span className='' onMouseOver={()=>{setDropdown(true)}} onMouseLeave={()=>{setDropdown(false)}}>
-    {user.value && <button  className="inline-flex items-center bg-orange-400 border-0 py-1 px-3 focus:outline-none hover:bg-orange-200 rounded text-xl md:text-2xl mt-4 md:mt-0 mx-5 text-black">
+    {user.value && <button  className="inline-flex items-center bg-violet-400 border-0 py-1 px-3 focus:outline-none hover:bg-violet-200 rounded text-xl md:text-2xl mt-4 md:mt-0 mx-5 text-black">
     <MdAccountCircle />
 
 <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4 ml-1" viewBox="0 0 24 24">
   <path d="M5 12h14M12 5l7 7-7 7"></path>
 </svg>
 </button>}
- {dropdown &&<div  className='cursor-pointer top-0 right-0 bg-orange-200 p-5 font-bold rounded-lg  '>
+ {dropdown &&<div  className='cursor-pointer top-0 right-0 bg-violet-200 p-5 font-bold rounded-lg  '>
   
         <ul>
       <Link href={'/components/myaccount'}><a> <li className='py-1 text-black  hover:text-gray-700 text-sm'>My Account</li></a></Link>
@@ -61,7 +61,7 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
 </span>
     
     {!user.value && <Link href={'/components/login'}>
-    <button className="inline-flex items-center bg-orange-400 border-0 py-1 px-3 focus:outline-none hover:bg-orange-200 rounded text-xl md:text-2xl mt-4 md:mt-0 mx-5 text-black">
+    <button className="inline-flex items-center bg-violet-400 border-0 py-1 px-3 focus:outline-none hover:bg-violet-200 rounded text-xl md:text-2xl mt-4 md:mt-0 mx-5 text-black">
 
       Login
       <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4 ml-1" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
       </svg>
     </button></Link>}
    
-    <button onClick={toggleCart} className="inline-flex items-center bg-orange-400 border-0 py-1 px-3 focus:outline-none hover:bg-orange-200 rounded text-xl md:text-2xl mt-4 md:mt-0 mx-5 text-black">< BsCart4/>
+    <button onClick={toggleCart} className="inline-flex items-center bg-violet-400 border-0 py-1 px-3 focus:outline-none hover:bg-violet-200 rounded text-xl md:text-2xl mt-4 md:mt-0 mx-5 text-black">< BsCart4/>
     
       <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4 ml-1" viewBox="0 0 24 24">
         <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -77,9 +77,9 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
     </button>
   </div>
  
-  <div ref={ref} className='sidebar overflow-y-scroll absolute top-0 right-0 bg-orange-200 p-10 transform transition-transform translate-x-full'>
+  <div ref={ref} className='sidebar overflow-y-scroll absolute top-0 right-0 bg-violet-200 p-10 transform transition-transform translate-x-full'>
     <h2 className='font-bold text-xl'>Shopping cart</h2>
-    <span onClick={toggleCart} className='absolute top-2 right-2 cursor-pointer text-xl text-orange-700'><AiFillCloseCircle/></span>
+    <span onClick={toggleCart} className='absolute top-2 right-2 cursor-pointer text-xl text-violet-700'><AiFillCloseCircle/></span>
     
     <ol className='list-decimal font-semibold'>
     {Object.keys(cart).length==0 && <div className='my-4 font-bold text-base'>Your cart is empty</div>}
@@ -92,10 +92,10 @@ const navbar = ({logout,user,cart,addToCart,RemoveFromCart,clearCart,subTotal,sa
       <span className='font-bold'>SubTotal:₹{subTotal} </span>
       <div className='flex'>
       <div className="p-2 w-full">
-         <button disabled={Object.keys(cart).length==0 && true} className=" disabled:bg-orange-100 flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/><Link href={'/components/checkout'}>Checkout</Link> </button>
+         <button disabled={Object.keys(cart).length==0 && true} className=" disabled:bg-violet-100 flex mx-auto text-white bg-violet-500 border-0 py-2 px-8 focus:outline-none hover:bg-violet-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/><Link href={'/components/checkout'}>Checkout</Link> </button>
         </div>
         <div className="p-2 w-full">
-          <button onClick={clearCart} disabled={Object.keys(cart).length==0 && true} className="disabled:bg-orange-100 flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/>ClearCart </button>
+          <button onClick={clearCart} disabled={Object.keys(cart).length==0 && true} className="disabled:bg-violet-100 flex mx-auto text-white bg-violet-500 border-0 py-2 px-8 focus:outline-none hover:bg-violet-700 rounded text-lg"><BsFillBagCheckFill className='text-xl m-1'/>ClearCart </button>
         </div>
       </div>
     </ol>

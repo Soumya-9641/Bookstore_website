@@ -56,6 +56,7 @@ const handler = async(req,res)=>{
                     address:req.body.address,
                     amount:req.body.subTotal,
                     products:req.body.cart,
+                    custid:req.body.cid
                 })
                 await Order.save()
 
@@ -71,7 +72,7 @@ const handler = async(req,res)=>{
             "currency"  : "INR",
         },
         "userInfo"      : {
-            "custId"    : req.body.email,
+            "custId"    : req.body.cid,
         },
     };
     

@@ -108,7 +108,7 @@ const Post = ({addToCart,Product,buyNow}) => {
             </a>
           </span>
         </div>
-        <p className="leading-relaxed">{Product.Type}</p>
+        <p className="leading-relaxed">{Product.desc}</p>
         <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
          
           

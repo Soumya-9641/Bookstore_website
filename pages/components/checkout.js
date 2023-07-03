@@ -83,7 +83,8 @@ const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) 
     
 
     let oid = Math.floor(Math.random()*Date.now());
-    const data ={cart,subTotal,oid,email:email,name,address,mobile,pin}
+    let cid = Math.floor(Math.random()*Date.now()*10);
+    const data ={cart,subTotal,oid,email,name,address,mobile,pin,cid}
     let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pretransaction`, {
       method: 'POST', // or 'PUT'
       headers: {
@@ -158,7 +159,7 @@ theme="dark"
     <Head>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"/>
     </Head>
-    <Script type="application/javascript" src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}  crossorigin="anonymous"></Script>
+    <Script type="applica tion/javascript" src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}  crossorigin="anonymous"></Script>
 
     <div className="flex flex-col text-center w-full mb-4">
       <h1 className="sm:text-3xl text-2xl font-medium title-font mb-8 text-black">Contact Us</h1>
@@ -214,7 +215,7 @@ theme="dark"
           </div>
         </div>
         <div className="p-2 w-full">
-          <button className="flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-600 rounded text-lg"><Link href={'/components/oders'}>Proceed To Pay</Link></button>
+          <button className="flex mx-auto text-white bg-orange-500 border-0 py-2 px-8 focus:outline-none hover:bg-orange-600 rounded text-lg"><Link href={'/components/orders'}>Proceed To Pay</Link></button>
         </div>
         <div className="flex flex-col text-center w-full mb-4">
       
