@@ -65,7 +65,7 @@ const Myaccount = (cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart) =>
   return (<div>
     <div className="flex flex-col text-center w-full mb-4">
     <h1 className="sm:text-3xl text-2xl font-medium title-font mb-8 text-black">Update your account</h1>
-    <h2 className='font-semibold'>1. Delivery Details</h2>
+    
   </div>
  
   <div className="lg:w-1/2 md:w-2/3 mx-auto">
@@ -116,7 +116,7 @@ const Myaccount = (cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart) =>
           <input  onChange={handleChange} value={state} type="state" id="state" name="state" className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
         </div>
       </div>
-     
+      <button  className='disabled:bg-orange-100 bg-orange-400 rounded-md font-bold cursor-pointer flex items-center justify-center ml-72'>Update </button>
       <div className="flex flex-col text-center w-full mb-4">
     
        

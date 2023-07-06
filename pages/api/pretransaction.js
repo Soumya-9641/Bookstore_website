@@ -1,70 +1,72 @@
-import { Promise } from 'mongoose';
+//import { Promise } from 'mongoose';
 const https = require('https');
 const PaytmChecksum = require('paytmchecksum');
+
 import order from '../models/order';
 import connectDb from '../middlewares/mongoose';
 import product from '../models/product';
 import pincode from "../../pincode.json";
-const handler = async(req,res)=>{
+export default async function handler (req,res){
             
             if(req.method=='POST'){
+                var paytmParams = {}
             let Product,sumTotal=0;
-            if(!Object.keys(pincode).includes(req.body.pin)){
-                res.status(200).json({success:false,"error":"This pincode is not servicesable!"})
-                return 
-            }
+            // if(!Object.keys(pincode).includes(req.body.pin)){
+            //     res.status(200).json({success:false,"error":"This pincode is not servicesable!"})
+            //     return 
+            // }
             //check the cart is tempered with
             let cart=req.body.cart
-            for( let item in cart){
-                console.log(item)
-                sumTotal+=cart[item].price*cart[item].qyt
-                Product = await product.findOne({slug:item})
-                if(req.body.subTotal <=0){
-                    res.status(200).json({success:false,"error":"Your cart is empty!please build your cart and try later",clearCart:true});
-                }
-                if(Product.availability < cart[item].qyt){
-                    res.status(200).json({success:false,"error":"some items in your cart is out of stock.Please try again later. ",clearCart:true})
-                }
+            // for( let item in cart){
+            //     console.log(item)
+            //     sumTotal+=cart[item].price*cart[item].qyt
+            //     Product = await product.findOne({slug:item})
+            //     if(req.body.subTotal <=0){
+            //         res.status(200).json({success:false,"error":"Your cart is empty!please build your cart and try later",clearCart:true});
+            //     }
+            //     if(Product.availability < cart[item].qyt){
+            //         res.status(200).json({success:false,"error":"some items in your cart is out of stock.Please try again later. ",clearCart:true})
+            //     }
 
-                if(Product.price!=cart[item].price){
-                    res.status(200).json({success:false,"error":"The price of some items in your cart have changes.Please try again"})
-                    return 
-                }
-            } 
-            if(sumTotal!==req.body.subTotal){
-                res.status(200).json({success:false,"error":"The price of some items in your cart have changes.Please try again"})
-                return 
-            }
+            //     if(Product.price!=cart[item].price){
+            //         res.status(200).json({success:false,"error":"The price of some items in your cart have changes.Please try again"})
+            //         return 
+            //     }
+            // } 
+            // if(sumTotal!==req.body.subTotal){
+            //     res.status(200).json({success:false,"error":"The price of some items in your cart have changes.Please try again"})
+            //     return 
+            // }
 
-            //check if items are out of stock
+            // //check if items are out of stock
 
-            if(req.body.mobile.length!=10 || !Number.isInteger(Number(req.body.mobile))){
-                res.status(200).json({success:false,"error":" Please enter your 10 digit number",clearCart:false})
-                return 
-            }
-            if(req.body.pin.length!=6 || !Number.isInteger(Number(req.body.pin))){
-                res.status(200).json({success:false,"error":" Please enter your 10 digit number",clearCart:false})
-                return 
-            }
+            // if(req.body.mobile.length!=10 || !Number.isInteger(Number(req.body.mobile))){
+            //     res.status(200).json({success:false,"error":" Please enter your 10 digit number",clearCart:false})
+            //     return 
+            // }
+            // if(req.body.pin.length!=6 || !Number.isInteger(Number(req.body.pin))){
+            //     res.status(200).json({success:false,"error":" Please enter your 10 digit number",clearCart:false})
+            //     return 
+            // }
 
             //check if details are valid 
 
 
-                let Order = new order({
-                    email:req.body.email,
-                    orderId:req.body.oid,
-                    address:req.body.address,
-                    amount:req.body.subTotal,
-                    products:req.body.cart,
-                    custid:req.body.cid
-                })
-                await Order.save()
+                // let Order = new order({
+                //     email:req.body.email,
+                //     orderId:req.body.oid,
+                //     address:req.body.address,
+                //     amount:req.body.subTotal,
+                //     products:req.body.cart,
+                //     custid:req.body.cid
+                // })
+                // await Order.save()
 
-    var paytmParams = {}
+    
     paytmParams.body = {
         "requestType"   : "Payment",
         "mid"           : process.env.NEXT_PUBLIC_PAYTM_MID,
-        "websiteName"   : "YOUR_WEBSITE_NAME",
+        "websiteName"   : "WEBSTAGING",
         "orderId"       : req.body.oid,
         "callbackUrl"   : `${process.env.NEXT_PUBLIC_HOST}/api/posttransaction`,
         "txnAmount"     : {
@@ -72,7 +74,7 @@ const handler = async(req,res)=>{
             "currency"  : "INR",
         },
         "userInfo"      : {
-            "custId"    : req.body.cid,
+            "custId"    : req.body.email,
         },
     };
     
@@ -114,14 +116,14 @@ const handler = async(req,res)=>{
                             });
                     
                             post_res.on('end', function(){
-                        let ress = JSON.parse(response).body
-                            //console.log('Response: ', response);
-                    ress.success=true
-                    resolve(ress)
+                        let ress = JSON.parse(response)
+                             console.log('Response: ', ress);
+                     ress.success=true
+                    resolve(ress);
                             });
                         });
                     
-                        post_req.write(post_data);
+                     post_req.write(post_data);
                         post_req.end();
                     
             })
@@ -133,4 +135,4 @@ const handler = async(req,res)=>{
 
     }
  }
- export default connectDb(handler);
+

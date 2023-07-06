@@ -7,7 +7,26 @@ import Script from 'next/script';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { userAgent } from 'next/server';
+const shortid = require('shortid')
+import { useRouter } from 'next/router'
+function loadScript(src) {
+	return new Promise((resolve) => {
+   
+		const script = document.createElement('script')
+		script.src = src
+		script.onload = () => {
+			resolve(true)
+		}
+		script.onerror = () => {
+			resolve(false)
+		}
+		document.body.appendChild(script)
+	})
+}
+
+
 const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) => {
+  const router = useRouter('')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [address, setAddress] = useState('')
@@ -16,14 +35,68 @@ const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) 
     const [city, setCity] = useState('')
     const [state, setState] = useState('')
     const [disabled, setdisabled] = useState(true)
-    //const [user, setUser] = useState({value:null})
-    // useEffect(() => {
-    //   const user = JSON.parse(localStorage.getItem('myuser'))
-    //   if(user.token){
-    //     setUser(user)
-    //     setEmail(user.email)
-    //   }
-    // }, [])
+    async function displayRazorpay() {
+      const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+  
+      if (!res) {
+        alert('Razorpay SDK failed to load. Are you online?')
+        return
+      }
+      
+      const oid=shortid.generate()
+      const data ={subTotal,oid,name,email,mobile}
+    let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/transaction`, {
+      method: 'POST', // or 'PUT'
+      headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify(data),
+   })
+   let txnRes = await a.json()
+   console.log(txnRes)
+  const amount= subTotal*100
+      const options = {
+        key: 'rzp_test_NqBEWmLJAJOnjU',
+        currency: "INR",
+        amount: amount,
+        order_id: txnRes.id,
+        name: 'Donation',
+        description: 'Thank you for nothing. Please give us some money',
+        image: 'http://localhost:1337/logo.svg',
+        handler: function (response) {
+          console.log(response)
+          toast.success("Your order placed sucessfully.Thank you", {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            });
+         
+          alert('your payment id is please copy it->'+response.razorpay_payment_id)
+          alert('your order id is copy it ->'+response.razorpay_order_id)
+          alert('your razorpaysignature is copy it->'+response.razorpay_signature)
+          router.push("/components/paymentdetails", { data: response })
+        },
+        prefill: {
+          name,
+          email: 'sdfdsjfh2@ndsfdf.com',
+          phone_number: '9899999999'
+        }
+      }
+      setName('')
+      setEmail('')
+      setAddress('')
+      setCity('')
+      setMobile('')
+      setPin('')
+      setState('')
+      const paymentObject = new window.Razorpay(options)
+      paymentObject.open()
+    }
     useEffect(() => {
       if(name.length>3 && email.length>3 && mobile.length>3 && address.length>3 && pin.length>3){
         setdisabled(false)
@@ -78,69 +151,84 @@ const checkout =  ({cart,clearCart,addToCart,RemoveFromCart,subTotal,saveCart}) 
 
        
     }
+
+    // function generateRandomString(length) {
+    //   let result = '';
+    //   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    //   const charactersLength = characters.length;
     
-  const paymentinitiate = async()=>{
+    //   for (let i = 0; i < length; i++) {
+    //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    //   }
+    
+    //   return result;
+    // }
+    
+//   const paymentinitiate = async()=>{
     
 
-    let oid = Math.floor(Math.random()*Date.now());
-    let cid = Math.floor(Math.random()*Date.now()*10);
-    const data ={cart,subTotal,oid,email,name,address,mobile,pin,cid}
-    let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pretransaction`, {
-      method: 'POST', // or 'PUT'
-      headers: {
-       'Content-Type': 'application/json',
-     },
-     body: JSON.stringify(data),
-   })
-   let txnRes = await a.json()
-   if(txnRes.success){
+//     let oid = generateRandomString(50);
+//     console.log(oid);
+//     //let cid = Math.floor(Math.random()*Date.now()*10);
+//     const data ={cart,subTotal,oid,email:"email"}
+//     let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pretransaction`, {
+//       method: 'POST', // or 'PUT'
+//       headers: {
+//        'Content-Type': 'application/json',
+//      },
+//      body: JSON.stringify(data),
+//    })
+//    let txnRes = await a.json()
+//    console.log(txnRes)
+//    if(txnRes.success){
         
   
-   console.log(txnRes)
-   let txnToken = txnRes.txnToken
-    var config = {
-      "root": "",
-      "flow": "DEFAULT",
-      "data": {
-      "orderId": oid, /* update order id */
-      "token": txnToken, /* update token value */
-      "tokenType": "TXN_TOKEN",
-      "amount": subTotal /* update amount */
-      },
-      "handler": {
-      "notifyMerchant": function(eventName,data){
-      console.log("notifyMerchant handler function called");
-      console.log("eventName => ",eventName);
-      console.log("data => ",data);
-      }
-      }
-      };
+//    console.log(txnRes)
+//    let txnToken = txnRes.txnToken
+//    console.log(txnToken)
+//     var config = {
+//       "root": "",
+//       "flow": "DEFAULT",
+//       "data": {
+//       "orderId": oid, /* update order id */
+//       "token": txnToken, /* update token value */
+//       "tokenType": "TXN_TOKEN",
+//       "amount": subTotal /* update amount */
+//       },
+//       "handler": {
+//       "notifyMerchant": function(eventName,data){
+//       console.log("notifyMerchant handler function called");
+//       console.log("eventName => ",eventName);
+//       console.log("data => ",data);
+//       }
+//       }
+//       };
      
-      // initialze configuration using init method
-      window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
-      // after successfully updating configuration, invoke JS Checkout
-      window.Paytm.CheckoutJS.invoke();
-      }).catch(function onError(error){
-      console.log("error => ",error);
-      });
-    }else{
-      if(txnRes.error){
-        clearCart()
-      }
-      console.log(txnRes.error)
+//       // initialze configuration using init method
+//       window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+//       // after successfully updating configuration, invoke JS Checkout
+//       window.Paytm.CheckoutJS.invoke();
+//       }).catch(function onError(error){
+//       console.log("error => ",error);
+//       });
+//     }else{
+//       if(txnRes.error){
+//         clearCart()
+//       }
+//       console.log(txnRes.error)
       
-      toast.error(txnRes.error, {
-        position: "top-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        });
-    }
-};
+//       toast.error(txnRes.error, {
+//         position: "top-left",
+//         autoClose: 5000,
+//         hideProgressBar: false,
+//         closeOnClick: true,
+//         pauseOnHover: true,
+//         draggable: true,
+//         progress: undefined,
+//         theme: "dark",
+//         });
+//     }
+// };
   return (
    
      <div className="container px-5 py-24 mx-auto">
@@ -159,7 +247,7 @@ theme="dark"
     <Head>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"/>
     </Head>
-    <Script type="applica tion/javascript" src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}  crossorigin="anonymous"></Script>
+    <Script type="application/javascript" src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}  crossorigin="anonymous"/>
 
     <div className="flex flex-col text-center w-full mb-4">
       <h1 className="sm:text-3xl text-2xl font-medium title-font mb-8 text-black">Contact Us</h1>
@@ -232,7 +320,7 @@ theme="dark"
             <div className='flex font-semibold item-center justify-center w-1/3'><AiOutlineMinusCircle onClick={()=>{RemoveFromCart(k,1,cart[k].price,cart[k].size,cart[k].name,cart[k].varient)}} className='mt-1 mx-2 cursor-pointer'/>{cart[k].qyt}<AiOutlinePlusCircle onClick={()=>{addToCart(k,1,cart[k].price,cart[k].size,cart[k].name,cart[k].varient)}} className='mt-1 mx-2 cursor-pointer text-lg'/> </div>
             </div>
           </li>}) }
-            <button disabled={disabled} onClick={paymentinitiate}  className='disabled:bg-orange-100 bg-orange-400 rounded-md font-bold cursor-pointer'>Pay SubTotal:₹{subTotal} </button>
+            <button disabled={disabled} onClick={displayRazorpay}  className='disabled:bg-orange-100 bg-orange-400 rounded-md font-bold cursor-pointer'>Pay SubTotal:₹{subTotal} </button>
             
     </ol>
   </div>
